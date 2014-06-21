@@ -1,11 +1,7 @@
 from django import forms
+from measurement.base import MeasureBase
 import django_measurement.utils
 import django_measurement.base
-import django.contrib.gis.measure
-
-from django_measurement.fields import MeasurementField
-
-import inspect
 
 
 class MeasurementWidget(forms.MultiWidget):
@@ -26,12 +22,12 @@ class MeasurementWidget(forms.MultiWidget):
 
 
 class MeasurementFormField(forms.MultiValueField):
-    def __init__(self, max_value=None, min_value=None, choices=None, *args, **kwargs):
-        self.measurement_class = kwargs.pop("measurement", None)
-        if not self.measurement_class:
-            raise Exception("MeasurementFormField requires 'measurement'=<measurement class> keyword arguement")
+    def __init__(self, measurement, max_value=None, min_value=None, choices=None, *args, **kwargs):
+        if not issubclass(measurement, MeasureBase):
+            raise ValueError("%s must be a subclass ov MeasureBase" % measurement)
+        self.measurement_class = measurement
         if not choices:
-            choices = tuple(((u, u) for u in self.measurement_class.UNITS))
+            choices = tuple(((u, u) for u in measurement.UNITS))
 
         float_field = forms.FloatField(max_value, min_value, *args, **kwargs)
         choice_field = forms.ChoiceField(choices=choices)
@@ -62,17 +58,16 @@ class MeasurementFormMixin(object):
            of the 3 database fields that make up a measurement, instead of the actual measurement itself"""
         instance = kwargs.get("instance", None)
         if instance:
-            # have an instance, must update initial data for measure fields as model_to_dict skips them 
+            # have an instance, must update initial data for measure fields as model_to_dict skips them
             # otherwise edits won't start with current value
             initial = kwargs.get("initial", {})
-            measurements = inspect.getmembers(instance, lambda x: isinstance(x,
-                                                                             django_measurement.base.MeasureBase) or isinstance(
-                x, django.contrib.gis.measure.MeasureBase) or isinstance(x, MeasurementField))
-            for (name, value) in measurements:
-                initial[name] = value
-            kwargs["initial"] = initial
+            # measurements = inspect.getmembers(instance, lambda x: isinstance(x,
+            #                                                                  django_measurement.base.MeasureBase) or isinstance(
+            #     x, django.contrib.gis.measure.MeasureBase) or isinstance(x, MeasurementField))
+            # for (name, value) in measurements:
+            #     initial[name] = value
+            # kwargs["initial"] = initial
         super(MeasurementFormMixin, self).__init__(*args, **kwargs)
-
 
     def save(self, commit=True):
         """due to the way construct_instance looks at database fields in the object and skips MeasurementFields

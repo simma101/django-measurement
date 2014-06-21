@@ -196,8 +196,6 @@ class MeasurementFieldTest(TestCase):
         self.assertFalse(invalid_form.is_valid())
 
 
-
-
 class MeasurementUtilsTest(TestCase):
     def test_guess_measurement_weight(self):
         expected_measurement = measure.Weight(mcg=101)
