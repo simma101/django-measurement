@@ -1,7 +1,7 @@
 from django import forms
 from measurement.base import MeasureBase
-import django_measurement.utils
-import django_measurement.base
+from django.contrib import gis
+from . import base, utils
 
 
 class MeasurementWidget(forms.MultiWidget):
@@ -45,7 +45,7 @@ class MeasurementFormField(forms.MultiValueField):
         v = data_list[0]
         if v == None or v == "" or (isinstance(v, str) and v.strip() == ""):
             return None
-        rv = django_measurement.utils.get_measurement(self.measurement_class, data_list[0], data_list[1])
+        rv = utils.get_measurement(self.measurement_class, data_list[0], data_list[1])
         return rv
 
 
@@ -73,7 +73,7 @@ class MeasurementFormMixin(object):
         """due to the way construct_instance looks at database fields in the object and skips MeasurementFields
            this function must explicitly update the instance with cleaned data before calling the normal save"""
         for (field_name, value) in self.cleaned_data.items():
-            if isinstance(value, django_measurement.base.MeasureBase) or \
-                    isinstance(value, django.contrib.gis.measure.MeasureBase):
+            if isinstance(value, base.MeasureBase) or \
+                    isinstance(value, gis.measure.MeasureBase):
                 setattr(self.instance, field_name, value)
         return super(MeasurementFormMixin, self).save(commit)

@@ -1,13 +1,12 @@
 import logging
 import re
+from warnings import warn
 
-from django.core.exceptions import ValidationError
 from django.db.models import signals, Manager
 from django.db.models.query import QuerySet
 from django.db.models import CharField, Field, FloatField, NOT_PROVIDED
-
 from measurement.base import MeasureBase
-from django_measurement import measure, utils, forms
+from . import measure, utils, forms
 
 logger = logging.getLogger(__name__)
 
@@ -105,11 +104,17 @@ class MeasurementFieldDescriptor(object):
 
 
 class MeasurementField(Field):
+    """
+    A Django db field for  python measurement library objects.
+    """
     original_unit_field_name = '%s_unit'
     measure_field_name = '%s_measure'
     measurement_field_name = '%s_value'
 
     def __init__(self, verbose_name=None, name=None,  measurement=None, choices=None, max_value=None, min_value=None, *args, **kwargs):
+        if not measurement:
+            warn(DeprecationWarning, "measurement should be set to use django's ModelForm.")
+
         self.widget_args = {
             'measurement': measurement,
             'choices': choices,

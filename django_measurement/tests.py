@@ -1,22 +1,19 @@
 from django.db import models
+from django import forms
 from django.test import TestCase
-from measurement.measures import Distance
-from django.forms import Form
-
-from django_measurement.fields import MeasurementField
-from django_measurement.forms import MeasurementFormField
-from django_measurement import measure, utils
+from . import fields, utils, measure
 
 
 class MeasurementTestModel(models.Model):
-    measurement = MeasurementField()
+    measurement = fields.MeasurementField(measurement=measure.Distance, max_value=3.0, min_value=1.0)
 
     def __unicode__(self):
-        return unicode(self.pk)
+        return self.measurement
 
 
-class MeasurementTestForm(Form):
-    measurement = MeasurementFormField(measurement=Distance, max_value=3.0, min_value=1.0)
+class MeasurementTestForm(forms.ModelForm):
+    class Meta:
+        model = MeasurementTestModel
 
 
 class MeasurementFieldTest(TestCase):
@@ -49,10 +46,10 @@ class MeasurementFieldTest(TestCase):
         )
 
     def test_storage_and_retrieval_of_bidimensional_measurement(self):
-        arbitrary_default_unit='mi__hr'
-        arbitrary_value=65
-        arbitrary_measure=measure.Speed
-        arbitrary_measurement=utils.get_measurement(
+        arbitrary_default_unit = 'mi__hr'
+        arbitrary_value = 65
+        arbitrary_measure = measure.Speed
+        arbitrary_measurement = utils.get_measurement(
             arbitrary_measure,
             arbitrary_value,
             arbitrary_default_unit,
@@ -79,10 +76,10 @@ class MeasurementFieldTest(TestCase):
         )
 
     def test_storage_and_retrieval_of_measurement(self):
-        arbitrary_default_unit='lb'
-        arbitrary_value=124
-        arbitrary_measure=measure.Weight
-        arbitrary_measurement=utils.get_measurement(
+        arbitrary_default_unit = 'lb'
+        arbitrary_value = 124
+        arbitrary_measure = measure.Weight
+        arbitrary_measurement = utils.get_measurement(
             arbitrary_measure,
             arbitrary_value,
             arbitrary_default_unit,
@@ -109,14 +106,14 @@ class MeasurementFieldTest(TestCase):
         )
 
     def test_retrieval_of_mismatched_measure(self):
-        arbitrary_default_unit='g'
-        arbitrary_measure_name='Weight(a)'
-        arbitrary_value=2324
+        arbitrary_default_unit = 'g'
+        arbitrary_measure_name = 'Weight(a)'
+        arbitrary_value = 2324
 
         instance = MeasurementTestModel()
-        instance.measurement_value=arbitrary_value
-        instance.measurement_measure=arbitrary_measure_name
-        instance.measurement_unit=arbitrary_default_unit
+        instance.measurement_value = arbitrary_value
+        instance.measurement_measure = arbitrary_measure_name
+        instance.measurement_unit = arbitrary_default_unit
         instance.save()
 
         measurement = MeasurementTestModel.objects.all()[0]
@@ -125,14 +122,14 @@ class MeasurementFieldTest(TestCase):
             measurement.measurement
 
     def test_retrieval_of_unit_unspecified_measure(self):
-        arbitrary_default_unit='g'
-        arbitrary_measure_name='Weight'
-        arbitrary_value=2324
+        arbitrary_default_unit = 'g'
+        arbitrary_measure_name = 'Weight'
+        arbitrary_value = 2324
 
         instance = MeasurementTestModel()
-        instance.measurement_value=arbitrary_value
-        instance.measurement_measure=arbitrary_measure_name
-        instance.measurement_unit=arbitrary_default_unit
+        instance.measurement_value = arbitrary_value
+        instance.measurement_measure = arbitrary_measure_name
+        instance.measurement_unit = arbitrary_default_unit
         instance.save()
 
         retrieved = MeasurementTestModel.objects.all()[0]
@@ -147,14 +144,14 @@ class MeasurementFieldTest(TestCase):
         )
 
     def test_retrieval_of_unknown_measure_returns_unknown_measure(self):
-        arbitrary_default_unit='versta'
-        arbitrary_measure_name='ImperialRussian(versta)'
-        arbitrary_value=3731.5
+        arbitrary_default_unit = 'versta'
+        arbitrary_measure_name = 'ImperialRussian(versta)'
+        arbitrary_value = 3731.5
 
         instance = MeasurementTestModel()
-        instance.measurement_value=arbitrary_value
-        instance.measurement_measure=arbitrary_measure_name
-        instance.measurement_unit=arbitrary_default_unit
+        instance.measurement_value = arbitrary_value
+        instance.measurement_measure = arbitrary_measure_name
+        instance.measurement_unit = arbitrary_default_unit
         instance.save()
 
         retrieved = MeasurementTestModel.objects.all()[0]
@@ -165,14 +162,14 @@ class MeasurementFieldTest(TestCase):
         )
 
     def test_storage_of_unknown_measure_stores_same_measure(self):
-        arbitrary_default_unit='versta'
-        arbitrary_measure_name='ImperialRussian(versta)'
-        arbitrary_value=3731.5
+        arbitrary_default_unit = 'versta'
+        arbitrary_measure_name = 'ImperialRussian(versta)'
+        arbitrary_value = 3731.5
 
         instance = MeasurementTestModel()
-        instance.measurement_value=arbitrary_value
-        instance.measurement_measure=arbitrary_measure_name
-        instance.measurement_unit=arbitrary_default_unit
+        instance.measurement_value = arbitrary_value
+        instance.measurement_measure = arbitrary_measure_name
+        instance.measurement_unit = arbitrary_default_unit
         instance.save()
 
         retrieved = MeasurementTestModel.objects.all()[0]

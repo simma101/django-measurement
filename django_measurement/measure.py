@@ -1,5 +1,5 @@
-from measurement.measures import *
 from measurement.utils import total_ordering
+from measurement.measures import *
 
 
 @total_ordering

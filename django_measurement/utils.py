@@ -1,8 +1,7 @@
 from django.conf import settings
 from measurement.base import BidimensionalMeasure
 from measurement.utils import get_all_measures, guess as guess_measurement
-
-from django_measurement.measure import UnknownMeasure
+from .measure import UnknownMeasure
 
 MEASURE_OVERRIDES = getattr(settings, 'MEASURE_OVERRIDES', {})
 

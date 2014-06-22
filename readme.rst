@@ -1,5 +1,11 @@
 .. image:: https://travis-ci.org/latestrevision/django-measurement.png?branch=master
    :target: https://travis-ci.org/latestrevision/django-measurement
+.. image:: https://pypip.in/v/django-measurement/badge.png
+  :target: https://crate.io/packages/django-measurement
+.. image:: https://pypip.in/d/django-measurement/badge.png
+  :target: https://crate.io/packages/django-measurement
+.. image:: https://pypip.in/license/django-measurement/badge.png
+  :target: https://pypi.python.org/pypi/django-measurement/
 
 Easily use, manipulate, and store unit-aware measurement objects using Python
 and Django.
@@ -20,15 +26,15 @@ Example use with a model:
 .. code-block:: python
 
    from django_measurement.fields import MeasurementField
-   from measurement.measures import Volume
-   from django.db.models import Model
+   from django_measurement.measure import Volume
+   from django.db import models
    
-   class BeerConsumptionLogEntry(Model):
+   class BeerConsumptionLogEntry(models.Model):
        name = models.CharField(max_length=255)
-       volume = models.MeasurementField()
+       volume = models.MeasurementField(measurement=Volume)
    
-       def __str__(self):
-           return '%s of %s' % (self.name, self.volume, )
+       def __unicode__(self):
+           return u"%s of %s" % (self.name, self.volume, )
 
    entry = BeerConsumptionLogEntry()
    entry.name = 'Bear Republic Racer 5'
@@ -41,7 +47,7 @@ too:
 
 .. code-block:: python
 
-   >>> from measurement.measures import Weight
+   >>> from django_measurement.measures import Weight
    >>> weight_1 = Weight(lb=125)
    >>> weight_2 = Weight(kg=40)
    >>> added_together = weight_1 + weight_2
@@ -56,10 +62,3 @@ too:
   `Github <http://github.com/latestrevision/django-measurement/issues>`_.
 - Test status available on
   `Travis-CI <https://travis-ci.org/latestrevision/django-measurement>`_.
-
-
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/latestrevision/django-measurement/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-
