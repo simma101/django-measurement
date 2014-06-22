@@ -1,4 +1,5 @@
 from django import forms
+from warnings import warn
 from measurement.base import MeasureBase
 from django.contrib import gis
 from . import base, utils
@@ -53,6 +54,7 @@ class MeasurementFormMixin(object):
     """This mixin works around django's preference for db fields mapping to form fields"""
 
     def __init__(self, *args, **kwargs):
+        warn(DeprecationWarning, "MeasurementFormMixin is deprecated and will be removed in versin 1.5")
         """add fields to initial data (so the widgets will start with thre current values) if we have an instance.
            model_to_dict skips over the measurement fields because they are not editable (and it sees them as each
            of the 3 database fields that make up a measurement, instead of the actual measurement itself"""
