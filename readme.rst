@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/latestrevision/django-measurement.png?branch=master
-   :target: https://travis-ci.org/latestrevision/django-measurement
+.. image:: https://travis-ci.org/coddingtonbear/django-measurement.png
+   :target: https://travis-ci.org/coddingtonbear/django-measurement
 .. image:: https://pypip.in/v/django-measurement/badge.png
   :target: https://crate.io/packages/django-measurement
 .. image:: https://pypip.in/d/django-measurement/badge.png
@@ -34,7 +34,7 @@ Example use with a model:
        volume = models.MeasurementField(measurement=Volume)
    
        def __unicode__(self):
-           return u"%s of %s" % (self.name, self.volume, )
+           return u"%s of %s" % (self.name, self.volume)
 
    entry = BeerConsumptionLogEntry()
    entry.name = 'Bear Republic Racer 5'
