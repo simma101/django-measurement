@@ -10,8 +10,7 @@
 Easily use, manipulate, and store unit-aware measurement objects using Python
 and Django.
 
-**Note**: Currently, this is not compatible with Django 1.6 or later.
-For more information, please `follow the issue tracking this limitation <https://github.com/coddingtonbear/django-measurement/issues/3>`__.
+**Note**: Currently, this is only compatible with Django 1.6 or later.
 
 `django.contrib.gis.measure <https://github.com/django/django/blob/master/django/contrib/gis/measure.py>`_
 has these wonderful 'Distance' objects that can be used not only for storing a

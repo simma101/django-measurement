@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import sys
-
 from os.path import dirname, abspath
-
 from django.conf import settings
 
 if not settings.configured:
@@ -22,7 +20,7 @@ if not settings.configured:
 from django.test.simple import DjangoTestSuiteRunner
 
 
-def runtests(*test_args):
+def run_tests(*test_args):
     if not test_args:
         test_args = ['django_measurement']
     parent = dirname(abspath(__file__))
@@ -33,4 +31,4 @@ def runtests(*test_args):
 
 
 if __name__ == '__main__':
-    runtests(*sys.argv[1:])
+    run_tests(*sys.argv[1:])
