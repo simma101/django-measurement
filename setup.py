@@ -15,7 +15,7 @@ setup(
     author_email='me@adamcoddington.net',
     tests_require=tests_require,
     extras_require={'test': tests_require},
-    test_suite='runtests.runtests',
+    test_suite='runtests.run_tests',
     install_requires=requirements,
     classifiers=[
         'Framework :: Django',
