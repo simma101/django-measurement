@@ -5,6 +5,7 @@ import six
 from django.db import models
 from django.db.models import Field
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from measurement.base import MeasureBase, BidimensionalMeasure
 from measurement import measures
@@ -12,6 +13,7 @@ from measurement import measures
 from . import forms
 from .utils import get_measurement
 
+MEASURE_OVERRIDES = getattr(settings, 'MEASURE_OVERRIDES', {})
 
 class MeasurementField(six.with_metaclass(models.SubfieldBase, Field)):
     description = "Easily store, retrieve, and convert python measures."
@@ -27,12 +29,22 @@ class MeasurementField(six.with_metaclass(models.SubfieldBase, Field)):
         ),
     }
 
+    def _get_class_by_path(self, path):
+        mod = __import__('.'.join(path.split('.')[:-1]))
+        components = path.split('.')
+        for comp in components[1:]:
+            mod = getattr(mod, comp)
+        return mod
+
     def __init__(self, verbose_name=None, name=None, measurement=None,
                  measurement_class=None, unit_choices=None,
                  min_value=None, max_value=None, *args, **kwargs):
 
         if not measurement and measurement_class:
-            measurement = getattr(measures, measurement_class)
+            if measurement_class in MEASURE_OVERRIDES:
+                measurement = self._get_class_by_path(MEASURE_OVERRIDES[measurement_class])
+            else:
+                measurement = getattr(measures, measurement_class)
 
         if not measurement:
             raise TypeError('MeasurementField() takes a measurement'
